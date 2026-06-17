@@ -28,9 +28,12 @@ const collectionSummary = document.querySelector("#collection-summary");
 
 const GAME_DURATION = 55000;
 const PLAYER_STEP = 48;
+const TOUCH_CLIMB_SPEED = 42;
+const TOUCH_GLIDE_SPEED = 28;
 let soundIsOn = true;
 let activeScreen = "title";
 let playerY = 48;
+let isPressingToClimb = false;
 let collectedCount = 0;
 let startTime = 0;
 let animationFrame = 0;
@@ -233,6 +236,7 @@ function startGame() {
   player.classList.remove("cloud-hit");
   collectedCount = 0;
   collectedItemIds.clear();
+  isPressingToClimb = false;
   playerY = 48;
   elapsedGameTime = 0;
   slowdownUntil = 0;
@@ -263,6 +267,7 @@ function updateGame(now) {
 
   progressFill.style.width = `${progress * 100}%`;
   timeLeft.textContent = `0:${String(remainingSeconds).padStart(2, "0")}`;
+  updateTouchFlight(delta);
   addTrailParticle(now);
 
   document.querySelectorAll(".collectible:not(.collected)").forEach((element) => {
@@ -364,10 +369,18 @@ function movePlayer(nextY) {
   player.style.top = `${playerY}%`;
 }
 
+function updateTouchFlight(delta) {
+  if (!window.matchMedia("(pointer: coarse)").matches) return;
+  const seconds = delta / 1000;
+  const direction = isPressingToClimb ? -TOUCH_CLIMB_SPEED : TOUCH_GLIDE_SPEED;
+  movePlayer(playerY + direction * seconds);
+}
+
 function finishGame() {
   cancelAnimationFrame(animationFrame);
   memoryCard.hidden = true;
   flightStatus.hidden = true;
+  isPressingToClimb = false;
   arrivalSummary.textContent = `You brought ${collectedCount} of ${collectionItems.length} memories home.`;
   showScreen("arrival");
 }
@@ -450,8 +463,16 @@ document.addEventListener("keydown", (event) => {
 });
 
 screens.game.addEventListener("pointerdown", (event) => {
-  const bounds = screens.game.getBoundingClientRect();
-  movePlayer(((event.clientY - bounds.top) / bounds.height) * 100);
+  if (event.pointerType !== "touch" && event.pointerType !== "pen") return;
+  event.preventDefault();
+  isPressingToClimb = true;
+  screens.game.setPointerCapture?.(event.pointerId);
+});
+
+["pointerup", "pointercancel", "lostpointercapture"].forEach((eventName) => {
+  screens.game.addEventListener(eventName, () => {
+    isPressingToClimb = false;
+  });
 });
 
 window.untilNextTime = {
