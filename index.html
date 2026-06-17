@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+      name="description"
+      content="Until Next Time — a short journey across the Pacific, made with memories."
+    >
+    <title>Until Next Time</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <audio id="background-music" src="bgm.mp3" loop preload="auto"></audio>
+
+    <main id="game-shell" class="game-shell">
+      <header class="top-bar">
+        <p class="route-label">USA <span aria-hidden="true">→</span> JAPAN</p>
+        <button id="sound-toggle" class="small-button" type="button" aria-pressed="true">
+          Sound: On
+        </button>
+      </header>
+
+      <section id="title-screen" class="screen title-screen" aria-labelledby="game-title">
+        <div class="sun" aria-hidden="true"></div>
+        <div class="flight-path" aria-hidden="true"></div>
+        <img
+          class="title-plane"
+          src="plane.png"
+          alt=""
+        >
+        <div class="title-content">
+          <p class="eyebrow">A journey made of memories</p>
+          <h1 id="game-title">Until Next Time</h1>
+          <p class="subtitle">You Showed Me My Own Country</p>
+          <button id="start-button" class="primary-button" type="button">Start Journey</button>
+          <p class="controls-hint">Use ↑ ↓ keys or tap the screen</p>
+        </div>
+      </section>
+
+      <section id="intro-screen" class="screen story-screen" hidden>
+        <img
+          class="story-photo"
+          src="jack.jpg"
+          alt="Jack, the hero of this journey"
+        >
+        <div class="story-copy">
+          <p class="eyebrow">Our hero</p>
+          <h2>Jack’s Flight Back to Japan</h2>
+          <p>
+            TONTEKO is ready at the controls. Collect the memories waiting across the
+            Pacific and make it back to Tonteki.
+          </p>
+          <div class="rule-card" aria-label="How to play">
+            <strong>How to Play</strong>
+            <ol>
+              <li><span aria-hidden="true">↕</span> Move the plane up and down.</li>
+              <li><span aria-hidden="true">◎</span> Fly into the photos.</li>
+              <li><span aria-hidden="true">★</span> Collect as many memories as you can!</li>
+              <li><span aria-hidden="true">☁</span> Avoid the clouds or you’ll slow down.</li>
+              <li><span aria-hidden="true">↻</span> Memories appear in a new order each flight.</li>
+            </ol>
+          </div>
+          <blockquote>“Let’s head back to Japan!”</blockquote>
+          <button id="takeoff-button" class="primary-button" type="button">Take Off</button>
+        </div>
+      </section>
+
+      <section id="game-screen" class="screen game-screen" hidden aria-label="Flight game">
+        <div class="clouds clouds-far" aria-hidden="true"></div>
+        <div class="clouds clouds-near" aria-hidden="true"></div>
+        <div class="ocean" aria-hidden="true"></div>
+        <div id="trail-layer" class="trail-layer" aria-hidden="true"></div>
+        <div id="obstacles-layer" class="obstacles-layer" aria-hidden="true"></div>
+
+        <div class="game-hud">
+          <div>
+            <span class="hud-label">Memories</span>
+            <strong id="collection-count">0 / 12</strong>
+          </div>
+          <div class="progress-track" aria-label="Flight progress">
+            <span id="progress-fill"></span>
+          </div>
+          <span id="time-left" class="time-left">0:55</span>
+        </div>
+
+        <div id="player" class="player" aria-label="TONTEKO's airplane">
+          <img
+            class="airplane-image"
+            src="plane.png"
+            alt=""
+          >
+          <img
+            class="tonteko-pilot"
+            src="tonteko.png"
+            alt="TONTEKO piloting the airplane"
+          >
+        </div>
+
+        <div id="items-layer" class="items-layer"></div>
+        <p id="flight-status" class="flight-status" hidden>Cloud ahead! Slowing down...</p>
+        <p class="tap-hint">Move up and down. Fly into photos to collect memories!</p>
+      </section>
+
+      <aside id="memory-card" class="memory-card" hidden aria-live="polite">
+        <img id="memory-image" src="" alt="">
+        <div>
+          <p class="eyebrow">Memory collected</p>
+          <h3 id="memory-title"></h3>
+          <p id="memory-message"></p>
+        </div>
+      </aside>
+
+      <section id="arrival-screen" class="screen arrival-screen" hidden>
+        <img
+          class="arrival-background"
+          src="shop-front.jpg"
+          alt="The outside of Tonteki, the journey's destination"
+        >
+        <div class="arrival-shade"></div>
+        <img
+          class="cocona-welcome"
+          src="cocona.png"
+          alt="Cocona welcoming Jack back"
+        >
+        <div class="arrival-copy">
+          <p class="eyebrow">Nakano-sakaue, Japan</p>
+          <h2>Welcome back!</h2>
+          <p id="arrival-summary">You brought the memories home.</p>
+          <button id="ending-button" class="primary-button" type="button">See the Ending</button>
+        </div>
+      </section>
+
+      <section id="ending-screen" class="screen ending-screen" hidden>
+        <img
+          class="ending-poster"
+          src="ending.png"
+          alt="Until Next Time movie-style ending poster"
+        >
+        <div class="ending-actions">
+          <button id="collection-button" class="primary-button" type="button">
+            View Collected Memories
+          </button>
+          <button class="secondary-button back-title-button" type="button">Back to Title</button>
+        </div>
+      </section>
+
+      <section id="collection-screen" class="screen collection-screen" hidden>
+        <div class="collection-heading">
+          <p class="eyebrow">Memories from the journey</p>
+          <h2>Collected Memories</h2>
+          <p id="collection-summary"></p>
+        </div>
+        <div id="collection-grid" class="collection-grid"></div>
+        <div class="collection-actions">
+          <button id="play-again-button" class="primary-button" type="button">Play Again</button>
+          <button class="secondary-button back-title-button" type="button">Back to Title</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

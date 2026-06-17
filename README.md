@@ -1,3 +1,67 @@
 # Until Next Time
 
-A mini memory flight game for a friend heading back to the United States.
+アメリカへ帰国する友人へ贈る、3分以内で遊べる横スクロール収集ゲームです。
+
+## 現在の状態
+
+- GitHub Pagesで開ける単一ページ構成
+- タイトル画面の初期デザイン
+- PC・スマホ対応のレイアウト
+- 音声ON/OFFボタンの土台
+- 全12種のコレクションデータ
+- 写真、イラスト、音声を追加するための素材フォルダ
+
+すべての写真と音声は未実装ですが、飛行機画像と完成版エンディング画像は組み込み済みです。
+
+## 試作版について
+
+現在は、タイトルから簡易エンディングまで遊べる試作版です。
+
+- 上下キーまたは画面タップで飛行機を移動
+- 写真や日本アイテムを収集
+- プレイごとに写真の順番と高さが変化
+- 取得時に思い出カードを表示
+- 操作した軌跡に飛行機雲を表示
+- 障害物の雲に触れると短時間だけ減速
+- 写真取得時に思い出カードを表示
+- 約55秒で日本へ到着
+- 到着後に簡易エンディングを表示
+- エンディング後に集めた思い出写真を一覧表示
+- `夕暮れのひかり.mp3` をBGMとしてループ再生
+
+現在は、`assets/images/photos/` に入っている写真をゲーム内で直接使用しています。
+
+## ファイル構成
+
+```text
+until-next-time/
+├── index.html
+├── styles.css
+├── script.js
+├── GAME_PLAN.md
+└── assets/
+    ├── audio/
+    └── images/
+        ├── backgrounds/
+        ├── characters/
+        ├── items/
+        └── photos/
+```
+
+## 素材を置く場所
+
+- `assets/images/characters/`: TONTEKO、ココナ
+- `assets/images/items/`: 富士山、提灯、桜などの収集アイテム
+- `assets/images/photos/`: 店舗写真、ツーショット写真、プレイヤー写真
+- `assets/images/backgrounds/`: アメリカ、太平洋、日本、とんてき店舗
+- `assets/audio/`: BGM、アイテム取得音、到着音
+
+人物写真は実写のまま使用し、顔の加工やAIによる描き換えは行いません。
+
+## ローカルで確認する方法
+
+`index.html` をブラウザで開くと、現在のタイトル画面を確認できます。
+
+## GitHub Pages
+
+このフォルダをGitHubリポジトリへアップロードし、Pagesの公開元をルートに設定すると公開できます。
