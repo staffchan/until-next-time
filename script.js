@@ -30,6 +30,11 @@ const collectionSummary = document.querySelector("#collection-summary");
 const GAME_DURATION = 55000;
 const PLAYER_STEP = 48;
 const MOBILE_BUTTON_SPEED = 42;
+const TRAIL_INTERVAL_MS = 95;
+const MOBILE_TRAIL_INTERVAL_MS = 170;
+const MAX_TRAIL_PARTICLES = 28;
+const MAX_MOBILE_TRAIL_PARTICLES = 14;
+const coarsePointerQuery = window.matchMedia("(pointer: coarse)");
 let soundIsOn = true;
 let activeScreen = "title";
 let playerY = 48;
@@ -156,6 +161,21 @@ const obstacleClouds = [
 
 const itemTimeSlots = [0.05, 0.12, 0.19, 0.26, 0.33, 0.4, 0.47, 0.54, 0.61, 0.68, 0.76, 0.85];
 
+function preloadGameAssets() {
+  const imageSources = new Set(collectionItems.map((item) => item.image));
+  document.querySelectorAll("img[src]").forEach((image) => {
+    if (image.getAttribute("src")) {
+      imageSources.add(image.getAttribute("src"));
+    }
+  });
+
+  imageSources.forEach((source) => {
+    const image = new Image();
+    image.decoding = "async";
+    image.src = source;
+  });
+}
+
 function showScreen(name) {
   Object.entries(screens).forEach(([screenName, screen]) => {
     screen.hidden = screenName !== name;
@@ -176,6 +196,7 @@ function createItems() {
       const image = document.createElement("img");
       image.src = item.image;
       image.alt = item.title;
+      image.decoding = "async";
       element.append(image);
     } else {
       const emoji = document.createElement("span");
@@ -323,7 +344,9 @@ function collectItem(item, element) {
 }
 
 function addTrailParticle(now) {
-  if (now - lastTrailTime < 95) return;
+  const isMobileLike = coarsePointerQuery.matches;
+  const interval = isMobileLike ? MOBILE_TRAIL_INTERVAL_MS : TRAIL_INTERVAL_MS;
+  if (now - lastTrailTime < interval) return;
   lastTrailTime = now;
   const playerBounds = player.getBoundingClientRect();
   const gameBounds = screens.game.getBoundingClientRect();
@@ -333,6 +356,10 @@ function addTrailParticle(now) {
   particle.style.top = `${playerBounds.top - gameBounds.top + playerBounds.height * 0.58}px`;
   particle.style.setProperty("--trail-drift", `${Math.random() * 18 - 9}px`);
   trailLayer.append(particle);
+  const maxParticles = isMobileLike ? MAX_MOBILE_TRAIL_PARTICLES : MAX_TRAIL_PARTICLES;
+  while (trailLayer.childElementCount > maxParticles) {
+    trailLayer.firstElementChild?.remove();
+  }
   setTimeout(() => particle.remove(), 1900);
 }
 
@@ -438,10 +465,14 @@ function toggleSound() {
 }
 
 document.querySelector("#start-button").addEventListener("click", () => {
+  preloadGameAssets();
   playBackgroundMusic();
   showScreen("intro");
 });
-document.querySelector("#takeoff-button").addEventListener("click", startGame);
+document.querySelector("#takeoff-button").addEventListener("click", () => {
+  preloadGameAssets();
+  startGame();
+});
 document.querySelector("#ending-button").addEventListener("click", () => showScreen("ending"));
 document.querySelector("#collection-button").addEventListener("click", showCollection);
 document.querySelector("#play-again-button").addEventListener("click", () => showScreen("intro"));
@@ -482,5 +513,12 @@ window.untilNextTime = {
   collectionItems,
   currentRunItems: () => currentRunItems,
   finishGame,
+  preloadGameAssets,
   startGame,
 };
+
+if ("requestIdleCallback" in window) {
+  requestIdleCallback(preloadGameAssets, { timeout: 2500 });
+} else {
+  setTimeout(preloadGameAssets, 1200);
+}

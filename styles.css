@@ -335,6 +335,7 @@ h1 {
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.58);
   filter: blur(1px);
+  will-change: opacity, width, transform;
   animation: trail-fade 1.9s ease-out forwards;
 }
 
@@ -357,6 +358,7 @@ h1 {
   opacity: 0.92;
   transform: translate(-50%, -50%) scale(var(--cloud-size));
   filter: drop-shadow(0 7px 6px rgba(20, 32, 51, 0.14));
+  will-change: left;
 }
 
 .obstacle-cloud span {
@@ -451,6 +453,7 @@ h1 {
   height: 115px;
   transition: top 0.16s ease-out;
   filter: drop-shadow(0 10px 8px rgba(20, 32, 51, 0.25));
+  will-change: top;
 }
 
 .player.cloud-hit {
@@ -509,6 +512,7 @@ h1 {
   background: rgba(255, 243, 213, 0.95);
   box-shadow: 0 8px 18px rgba(20, 32, 51, 0.25);
   transform: translate(-50%, -50%);
+  will-change: left;
 }
 
 .collectible img {
