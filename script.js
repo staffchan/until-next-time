@@ -379,15 +379,25 @@ function hitCloud(element, now) {
 
 function showMemoryCard(item) {
   clearTimeout(memoryTimer);
+  const useLiteCard = coarsePointerQuery.matches;
   memoryTitle.textContent = item.title;
   memoryMessage.textContent = item.message;
-  memoryImage.src = item.image || "";
-  memoryImage.alt = item.image ? item.title : "";
-  memoryImage.hidden = !item.image;
+  memoryCard.classList.toggle("memory-card-lite", useLiteCard);
+
+  if (useLiteCard) {
+    memoryImage.removeAttribute("src");
+    memoryImage.alt = "";
+    memoryImage.hidden = true;
+  } else {
+    memoryImage.src = item.image || "";
+    memoryImage.alt = item.image ? item.title : "";
+    memoryImage.hidden = !item.image;
+  }
+
   memoryCard.hidden = false;
   memoryTimer = setTimeout(() => {
     memoryCard.hidden = true;
-  }, 1800);
+  }, useLiteCard ? 1200 : 1800);
 }
 
 function movePlayer(nextY) {
