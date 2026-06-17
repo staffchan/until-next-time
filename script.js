@@ -18,6 +18,7 @@ const collectionCount = document.querySelector("#collection-count");
 const progressFill = document.querySelector("#progress-fill");
 const timeLeft = document.querySelector("#time-left");
 const flightStatus = document.querySelector("#flight-status");
+const mobileControlButtons = document.querySelectorAll(".mobile-control-button");
 const memoryCard = document.querySelector("#memory-card");
 const memoryImage = document.querySelector("#memory-image");
 const memoryTitle = document.querySelector("#memory-title");
@@ -28,12 +29,11 @@ const collectionSummary = document.querySelector("#collection-summary");
 
 const GAME_DURATION = 55000;
 const PLAYER_STEP = 48;
-const TOUCH_CLIMB_SPEED = 42;
-const TOUCH_GLIDE_SPEED = 28;
+const MOBILE_BUTTON_SPEED = 42;
 let soundIsOn = true;
 let activeScreen = "title";
 let playerY = 48;
-let isPressingToClimb = false;
+let mobileMoveDirection = 0;
 let collectedCount = 0;
 let startTime = 0;
 let animationFrame = 0;
@@ -236,7 +236,7 @@ function startGame() {
   player.classList.remove("cloud-hit");
   collectedCount = 0;
   collectedItemIds.clear();
-  isPressingToClimb = false;
+  mobileMoveDirection = 0;
   playerY = 48;
   elapsedGameTime = 0;
   slowdownUntil = 0;
@@ -267,7 +267,7 @@ function updateGame(now) {
 
   progressFill.style.width = `${progress * 100}%`;
   timeLeft.textContent = `0:${String(remainingSeconds).padStart(2, "0")}`;
-  updateTouchFlight(delta);
+  updateMobileButtonFlight(delta);
   addTrailParticle(now);
 
   document.querySelectorAll(".collectible:not(.collected)").forEach((element) => {
@@ -369,18 +369,17 @@ function movePlayer(nextY) {
   player.style.top = `${playerY}%`;
 }
 
-function updateTouchFlight(delta) {
-  if (!window.matchMedia("(pointer: coarse)").matches) return;
+function updateMobileButtonFlight(delta) {
+  if (mobileMoveDirection === 0) return;
   const seconds = delta / 1000;
-  const direction = isPressingToClimb ? -TOUCH_CLIMB_SPEED : TOUCH_GLIDE_SPEED;
-  movePlayer(playerY + direction * seconds);
+  movePlayer(playerY + mobileMoveDirection * MOBILE_BUTTON_SPEED * seconds);
 }
 
 function finishGame() {
   cancelAnimationFrame(animationFrame);
   memoryCard.hidden = true;
   flightStatus.hidden = true;
-  isPressingToClimb = false;
+  mobileMoveDirection = 0;
   arrivalSummary.textContent = `You brought ${collectedCount} of ${collectionItems.length} memories home.`;
   showScreen("arrival");
 }
@@ -462,16 +461,20 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-screens.game.addEventListener("pointerdown", (event) => {
-  if (event.pointerType !== "touch" && event.pointerType !== "pen") return;
-  event.preventDefault();
-  isPressingToClimb = true;
-  screens.game.setPointerCapture?.(event.pointerId);
-});
+mobileControlButtons.forEach((button) => {
+  const direction = button.dataset.direction === "up" ? -1 : 1;
 
-["pointerup", "pointercancel", "lostpointercapture"].forEach((eventName) => {
-  screens.game.addEventListener(eventName, () => {
-    isPressingToClimb = false;
+  button.addEventListener("pointerdown", (event) => {
+    event.preventDefault();
+    mobileMoveDirection = direction;
+    movePlayer(playerY + direction * (PLAYER_STEP / 10));
+    button.setPointerCapture?.(event.pointerId);
+  });
+
+  ["pointerup", "pointercancel", "lostpointercapture", "pointerleave"].forEach((eventName) => {
+    button.addEventListener(eventName, () => {
+      mobileMoveDirection = 0;
+    });
   });
 });
 

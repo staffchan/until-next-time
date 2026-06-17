@@ -34,7 +34,7 @@
           <h1 id="game-title">Until Next Time</h1>
           <p class="subtitle">You Showed Me My Own Country</p>
           <button id="start-button" class="primary-button" type="button">Start Journey</button>
-          <p class="controls-hint">PC: ↑ ↓ keys / Phone: hold to climb, release to glide</p>
+          <p class="controls-hint">PC: ↑ ↓ keys / Phone: use the ↑ ↓ buttons</p>
         </div>
       </section>
 
@@ -55,7 +55,7 @@
             <strong>How to Play</strong>
             <ol>
               <li><span aria-hidden="true">↕</span> PC: use ↑ ↓ keys.</li>
-              <li><span aria-hidden="true">☝</span> Phone: hold to climb, release to glide down.</li>
+              <li><span aria-hidden="true">☝</span> Phone: use the ↑ ↓ buttons on screen.</li>
               <li><span aria-hidden="true">◎</span> Fly into the photos.</li>
               <li><span aria-hidden="true">★</span> Collect as many memories as you can!</li>
               <li><span aria-hidden="true">☁</span> Avoid the clouds or you’ll slow down.</li>
@@ -100,7 +100,11 @@
 
         <div id="items-layer" class="items-layer"></div>
         <p id="flight-status" class="flight-status" hidden>Cloud ahead! Slowing down...</p>
-        <p class="tap-hint">Phone: hold to climb, release to glide. PC: use ↑ ↓ keys.</p>
+        <p class="tap-hint">Phone: use the ↑ ↓ buttons. PC: use ↑ ↓ keys.</p>
+        <div class="mobile-controls" aria-label="Phone flight controls">
+          <button class="mobile-control-button" type="button" data-direction="up" aria-label="Move plane up">↑</button>
+          <button class="mobile-control-button" type="button" data-direction="down" aria-label="Move plane down">↓</button>
+        </div>
       </section>
 
       <aside id="memory-card" class="memory-card" hidden aria-live="polite">
